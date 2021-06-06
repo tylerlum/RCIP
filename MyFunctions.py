@@ -269,7 +269,7 @@ Set all columns with binary headers to 0
 def set_illnesses_to_zero(sheet, diagnostic_type, illnesses):
     ## Setup diagnostic type
     diagnostic_type_shortened = get_shortened_diagnostic_type(diagnostic_type)
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         for illness in illnesses:
@@ -279,7 +279,7 @@ def set_illnesses_to_zero(sheet, diagnostic_type, illnesses):
 Set all columns with binary headers to 0
 """            
 def set_mrr_to_zero(sheet, referral_reasons):
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         for referral_reason in referral_reasons:
             row_cells[column_names["mrr_{}".format(referral_reason)]].value = 0
@@ -288,7 +288,7 @@ def set_mrr_to_zero(sheet, referral_reasons):
 Set all columns with binary headers to 0
 """  
 def set_symptoms_to_zero(sheet, symptoms):
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         for symptom in symptoms:
             row_cells[column_names["{}".format(symptom)]].value = 0
@@ -303,7 +303,7 @@ Find first illness in diagnosis, then label the main diagnosis
 def set_main_diagnosis(sheet, diagnostic_type, ignore_keywords, illness_keywords):
     ## Setup diagnostic type
     diagnostic_type_shortened = get_shortened_diagnostic_type(diagnostic_type)
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         
@@ -368,7 +368,7 @@ For each illness in diagnosis, label the corresponding column with a 1
 def ohe_illnesses(sheet, diagnostic_type, ignore_keywords, illness_keywords):
     ## Setup diagnostic type
     diagnostic_type_shortened = get_shortened_diagnostic_type(diagnostic_type)
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         
@@ -408,7 +408,7 @@ def ohe_illnesses(sheet, diagnostic_type, ignore_keywords, illness_keywords):
 For each illness in diagnosis, label the corresponding column with a 1
 """
 def ohe_mrr(sheet, ignore_keywords, reasons_for_referral_keywords):
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         
         ## Ensure valid cell data
@@ -472,7 +472,7 @@ def ohe_mrr(sheet, ignore_keywords, reasons_for_referral_keywords):
 For each symptom in diagnosis, label the corresponding column with a 1
 """
 def ohe_symptoms(sheet, ignore_keywords, symptom_keywords):
-    column_names = get_column_names(data_sheet)
+    column_names = get_column_names(sheet)
     
     for row_cells in sheet.iter_rows(min_row=2, max_row=sheet.max_row):
         
