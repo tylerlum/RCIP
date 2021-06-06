@@ -15,9 +15,7 @@
 # +
 from copy import deepcopy
 
-from openpyxl.styles import Color, PatternFill, Font, Border
-from openpyxl.styles import colors
-from openpyxl.cell import Cell
+from openpyxl.styles import PatternFill
 
 redFill = PatternFill(start_color='FFFF0000',
                    end_color='FFFF0000',
@@ -69,32 +67,18 @@ Else return False
 Also handles edge cases of short keywords
 """
 def contains(statement, keywords):
+    keywords_check_letter_before_or_after = ["id", "ied", "tic", "si", "asd"]
+
     for word in keywords:
-        ## Edge cases
-        if word == "id":
-            if not has_letter_before_or_after(statement, word) and word in statement:
+        ## Edge case 1: ensure that there is no letter before or after keyword
+        if (word in keywords_check_letter_before_or_after and
+            has_letter_before_or_after(statement, word) and
+            word in statement):
                 return True
 
-        elif word == "ied":
-            if not has_letter_before_or_after(statement, word) and word in statement:
-                return True
-            
-        elif word == "tic":
-            if not has_letter_before_or_after(statement, word) and word in statement:
-                return True
-                
-        elif word == "si":
-            if not has_letter_before_or_after(statement, word) and word in statement:
-                return True
-            
-        elif word == "asd":
-            if not has_letter_before_or_after(statement, word) and word in statement:
-                return True
-            
-        elif word == "psychos":
-            if word in statement:
-                if not "psychosomatic" in statement: 
-                    return True
+        ## Edge case 2: avoid specific psychos psychosomatic mixup
+        elif word == "psychos" and word in statement and "psychosomatic" not in statement: 
+            return True
 
         ## Regular word
         elif word in statement:
@@ -108,13 +92,8 @@ admission => addx
 discharge => dcdx
 """
 def get_shortened_diagnostic_type(diagnostic_type):
-    if diagnostic_type == "admission":
-        return "addx"
-    elif diagnostic_type == "discharge":
-        return "dcdx"
-    else:
-        print("WARNING: BAD DIAGNOSTIC TYPE: {}".format(diagnostic_type))
-        return ""
+    mapping = {"admission": "addx", "discharge": "dcdx"}
+    return mapping[diagnostic_type]
 
 """
 Create a dictionary of column names
@@ -122,19 +101,15 @@ Create a dictionary of column names
 def get_column_names(sheet):
     column_names = {}
     i = 0
-    for col in sheet.iter_cols(1, sheet.max_column):
+    for i, col in enumerate(sheet.iter_cols(1, sheet.max_column)):
         column_names[col[0].value] = i
-        i += 1
     return column_names
 
 """
 Create key list from dictionary
 """
 def get_key_list(dictionary):
-    key_list = []
-    for i in dictionary.keys():
-        key_list.append(i)
-    return key_list
+    return list(dictionary.keys())
 
 """
 Handle edge cases of illnesses
@@ -168,10 +143,11 @@ Split each string and add to list
 Return list of all splits
 """
 def combine_split_strings(strings):
+    actual_strings = [s for s in strings if s is str]
+
     split_up_strings = []
-    for string in strings:
-        if type(string) is str:
-            split_up_strings = split_up_strings + split(string.lower())
+    for s in actual_strings:
+        split_up_strings += split(s.lower())
     return split_up_strings
 
 
