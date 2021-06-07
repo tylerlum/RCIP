@@ -15,7 +15,7 @@
 import pandas as pd
 import numpy as np
 
-from utilities import (is_nan, convert_to_dict_of_lists_no_nans, get_time, split, 
+from utilities import (is_nan, convert_to_dict_of_lists_no_nans, get_time, split,
                        has_letter_before_or_after, contains, manipulate_illness_list)
 
 ## Import data
@@ -45,7 +45,6 @@ DIAGNOSTIC_TYPES = ['addx', 'dcdx']
 
 # +
 ## Module 1: Add columns headers and set binary values to 0
-
 # Non-binary column headers
 for dt in DIAGNOSTIC_TYPES:
     DATA_DF[f"main_{dt}"] = ""
@@ -136,6 +135,7 @@ for i, row in DATA_DF.iterrows():
 
     # Get ref_reasons by iterating through ref_reason_statements
     ref_reason_statements = split(ref_reason_statement_str.lower())
+    all_ref_reasons = []
     for ref_reason_statement in ref_reason_statements:
         # Skip statements with IGNORE_KEYWORDS
         if contains(ref_reason_statement, IGNORE_KEYWORDS):
@@ -144,14 +144,15 @@ for i, row in DATA_DF.iterrows():
         # Get ref_reasons
         ref_reasons = [rr for rr, keywords in REASON_FOR_REFERRAL_TO_KEYWORDS.items()
                        if contains(ref_reason_statement, keywords)]
+        all_ref_reasons += ref_reasons
 
-        # Populate the binary illness values in the df
-        for rr in ref_reasons:
-            DATA_DF.at[i, f'mrr_{rr}'] = 1
+    # Populate the binary illness values in the df
+    for rr in all_ref_reasons:
+        DATA_DF.at[i, f'mrr_{rr}'] = 1
 
-        # Populate Other if no other reason is given
-        if len(ref_reasons) == 0:
-            DATA_DF.at[i, 'mrr_Other'] = 1
+    # Populate Other if no other reason is given
+    if len(all_ref_reasons) == 0:
+        DATA_DF.at[i, 'mrr_Other'] = 1
 
 # +
 ## Module 5: Read all four info columns, one hot encode symptoms
@@ -177,3 +178,5 @@ for i, row in DATA_DF.iterrows():
 
 ## Output file
 DATA_DF.to_excel("output-{}.xlsx".format(get_time()), engine='openpyxl')
+
+
