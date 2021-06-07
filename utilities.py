@@ -35,12 +35,15 @@ def convert_to_dict_of_lists_no_nans(df):
 """
 Returns string of hh-mm-ss
 """
-from time import gmtime, strftime
-def get_time():
-    return strftime("%H-%M-%S", gmtime())
+from datetime import datetime
+def get_date_time():
+    now = datetime.now() # current date and time
+    date_time = now.strftime("%m-%d-%Y_%H:%M:%S")
+    return date_time
 
 """
 Splits input string by delimiter
+Brittleness warning: May need to adjust this!
 Returns list of these strings
 """
 import re
@@ -61,6 +64,9 @@ def has_letter_before_or_after(statement, word):
 Returns True if statement contains any of words in keywords
 Else return False
 Also handles edge cases of short keywords
+Brittleness warning: May need to adjust this!
+HACKY! SHORT WORDS SHOULD LIKE THIS SHOULD ONLY BE COUNTED AS IN THE STATEMENT IF THERE IS NO LETTER BEFORE OR AFTER IT
+EG. "asd " is okay, " fasd" is not okay
 """
 def contains(statement, keywords):
     keywords_check_letter_before_or_after = ["id", "ied", "tic", "si", "asd"]
@@ -96,4 +102,3 @@ def manipulate_illness_list(illnesses):
         illnesses.remove("Schizophrenia Spectrum and Other Psychotic Disorders")
 
     return illnesses
-# -

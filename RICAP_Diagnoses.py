@@ -15,7 +15,7 @@
 import pandas as pd
 import numpy as np
 
-from utilities import (is_nan, convert_to_dict_of_lists_no_nans, get_time, split,
+from utilities import (is_nan, convert_to_dict_of_lists_no_nans, get_date_time, split,
                        has_letter_before_or_after, contains, manipulate_illness_list)
 
 ## Import data
@@ -23,7 +23,12 @@ filename = "NEW_INPUT.xlsx"
 DATA_DF = pd.read_excel(filename, sheet_name="ResearchInChildAndAd_DATA_2018-", engine='openpyxl')
 ILLNESS_DF = pd.read_excel(filename, sheet_name="Illness Keywords", engine='openpyxl')
 MRR_DF = pd.read_excel(filename, sheet_name="MRR Keywords", engine='openpyxl')
-# SYMPTOMS_DF = pd.read_excel(filename, sheet_name="Symptoms", engine='openpyxl')
+
+DATA_DF
+
+ILLNESS_DF
+
+MRR_DF
 
 # +
 ## Setup keywords
@@ -34,10 +39,17 @@ ILLNESSES = list(ILLNESS_TO_KEYWORDS.keys())
 
 REASON_FOR_REFERRAL_TO_KEYWORDS = convert_to_dict_of_lists_no_nans(MRR_DF)
 REASONS_FOR_REFERRAL = list(REASON_FOR_REFERRAL_TO_KEYWORDS.keys())
-
-# SYMPTOM_KEYWORDS = convert_to_dict_of_lists_no_nans(SYMPTOMS_DF)
-# SYMPTOMS = list(SYMPTOM_KEYWORDS.keys())
 # -
+
+IGNORE_KEYWORDS
+
+ILLNESS_TO_KEYWORDS
+
+ILLNESSES
+
+REASON_FOR_REFERRAL_TO_KEYWORDS
+
+REASONS_FOR_REFERRAL
 
 ## Setup important words
 FULL_DIAGNOSTIC_TYPES = ['admission', 'discharge']
@@ -52,7 +64,6 @@ for dt in DIAGNOSTIC_TYPES:
 # Binary column headers
 illness_headers = [f"{dt}_{illness}" for dt in DIAGNOSTIC_TYPES for illness in ILLNESSES]
 mrr_headers = [f"mrr_{reason}" for reason in REASONS_FOR_REFERRAL]
-# symptom_headers = [f"{symptom}" for symptom in SYMPTOMS]
 binary_column_headers = illness_headers + mrr_headers  # + symptom_headers
 
 for column_header in binary_column_headers:
@@ -70,6 +81,8 @@ for full_dt, dt in zip(FULL_DIAGNOSTIC_TYPES, DIAGNOSTIC_TYPES):
 
         # Get main diagnosis by iterating through diagnosis_statements until we get a valid statement
         diagnosis_statements = split(diagnosis_statement_str.lower())
+        # print(f"{diagnosis_statement_str} {diagnosis_statements}")
+        
         all_illnesses = []
         for diagnosis_statement in diagnosis_statements:
             # Skip statements with IGNORE_KEYWORDS
@@ -135,6 +148,7 @@ for i, row in DATA_DF.iterrows():
 
     # Get ref_reasons by iterating through ref_reason_statements
     ref_reason_statements = split(ref_reason_statement_str.lower())
+    
     all_ref_reasons = []
     for ref_reason_statement in ref_reason_statements:
         # Skip statements with IGNORE_KEYWORDS
@@ -154,29 +168,5 @@ for i, row in DATA_DF.iterrows():
     if len(all_ref_reasons) == 0:
         DATA_DF.at[i, 'mrr_Other'] = 1
 
-# +
-## Module 5: Read all four info columns, one hot encode symptoms
-# for i, row in DATA_DF.iterrows():
-#     ref_reason_statement_str = row['ref_reason'].lower()
-#     chief_complaint_statement_str = row['chief_complaint'].lower()
-#     admission_diagnosis_statement_str = row['admission_diagnosis'].lower()
-#     discharge_diagnosis_statement_str = row['discharge_diagnosis'].lower()
-
-#     all_statements = (split(ref_reason_statement_str) +
-#                       split(chief_complaint_statement_str) +
-#                       split(admission_diagnosis_statement_str) +
-#                       split(discharge_diagnosis_statement_str))
-
-#     for statement in all_statements:
-#         symptoms = [s for s in SYMPTOMS
-#                     if not contains(statement, IGNORE_KEYWORDS) and
-#                     contains(statement, SYMPTOM_TO_KEYWORDS[s])]
-
-#         for s in symptoms:
-#             DATA_DF.at[i, str(s)] = 1
-# -
-
 ## Output file
-DATA_DF.to_excel("output-{}.xlsx".format(get_time()), engine='openpyxl')
-
-
+DATA_DF.to_excel(f"output_{get_date_time()}.xlsx", engine='openpyxl')
