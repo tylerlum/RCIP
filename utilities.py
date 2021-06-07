@@ -38,7 +38,7 @@ Returns string of hh-mm-ss
 from datetime import datetime
 def get_date_time():
     now = datetime.now() # current date and time
-    date_time = now.strftime("%m-%d-%Y_%H:%M:%S")
+    date_time = now.strftime("%m-%d-%Y_%H-%M-%S")
     return date_time
 
 """
