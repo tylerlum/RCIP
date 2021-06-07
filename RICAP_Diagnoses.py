@@ -83,6 +83,9 @@ for full_dt, dt in zip(FULL_DIAGNOSTIC_TYPES, DIAGNOSTIC_TYPES):
 
         all_illnesses = []
         for diagnosis_statement in diagnosis_statements:
+            # Skip statements with IGNORE_KEYWORDS
+            if contains(diagnosis_statement, IGNORE_KEYWORDS):
+                continue
 
             # Get illnesses
             illnesses = [illness for illness, keywords in ILLNESS_TO_KEYWORDS.items()
