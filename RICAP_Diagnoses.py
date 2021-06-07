@@ -80,7 +80,7 @@ for full_dt, dt in zip(FULL_DIAGNOSTIC_TYPES, DIAGNOSTIC_TYPES):
 
         # Get main diagnosis by iterating through diagnosis_statements until we get a valid statement
         diagnosis_statements = split(diagnosis_statement_str.lower())
-        
+
         all_illnesses = []
         for diagnosis_statement in diagnosis_statements:
 
@@ -145,7 +145,7 @@ for i, row in DATA_DF.iterrows():
 
     # Get ref_reasons by iterating through ref_reason_statements
     ref_reason_statements = split(ref_reason_statement_str.lower())
-    
+
     all_ref_reasons = []
     for ref_reason_statement in ref_reason_statements:
         # Skip statements with IGNORE_KEYWORDS
@@ -166,4 +166,4 @@ for i, row in DATA_DF.iterrows():
         DATA_DF.at[i, 'mrr_Other'] = 1
 
 ## Output file
-DATA_DF.to_excel(f"output_{get_date_time()}.xlsx", engine='openpyxl')
+DATA_DF.to_excel(f"output_{get_date_time()}.xlsx", engine='openpyxl', index=False)
